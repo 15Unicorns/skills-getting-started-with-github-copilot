@@ -102,6 +102,10 @@ def signup_for_activity(activity_name: str, email: str):
     if email in activity["participants"]:
         raise HTTPException(status_code=400, detail="Student already signed up for this activity")
 
+    # Check capacity (if configured)
+    max_p = activity.get("max_participants")
+    if isinstance(max_p, int) and len(activity["participants"]) >= max_p:
+        raise HTTPException(status_code=400, detail="Activity is full")
 
     # Add student
     activity["participants"].append(email)
